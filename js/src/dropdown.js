@@ -75,7 +75,8 @@ const Default = {
   boundary: 'clippingParents',
   reference: 'toggle',
   display: 'dynamic',
-  popperConfig: null
+  popperConfig: null,
+  clickableMenu: false
 }
 
 const DefaultType = {
@@ -83,7 +84,8 @@ const DefaultType = {
   boundary: '(string|element)',
   reference: '(string|element|object)',
   display: 'string',
-  popperConfig: '(null|object|function)'
+  popperConfig: '(null|object|function)',
+  clickableMenu: 'boolean'
 }
 
 /**
@@ -374,6 +376,7 @@ class Dropdown extends BaseComponent {
     })
   }
 
+  // eslint-disable-next-line complexity
   static clearMenus(event) {
     if (event && (event.button === RIGHT_MOUSE_BUTTON || (event.type === 'keyup' && event.key !== TAB_KEY))) {
       return
@@ -401,9 +404,8 @@ class Dropdown extends BaseComponent {
       }
 
       if (event) {
-        const dropdownForm = dropdownMenu.querySelector('form')
-
-        if ([context._element, dropdownForm].some(element => event.composedPath().includes(element))) {
+        const composedPath = event.composedPath()
+        if (composedPath.includes(context._element) || (context._config.clickableMenu && composedPath.includes(dropdownMenu))) {
           continue
         }
 
